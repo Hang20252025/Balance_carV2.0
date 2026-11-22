@@ -22,7 +22,7 @@
 先初始化 CubeMX 生成的 UART 外设，再调用 BSP 初始化。对应 UART 的 NVIC 中断也必须已配置并启用。
 
 ```c
-#include "usart.h"
+"usart.h"
 #include "bsp_st_uart.h"
 
 int main(void)
