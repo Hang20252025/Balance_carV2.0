@@ -18,9 +18,13 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "drv_oled.h"
+#include "bsp_st_i2c.h"
+#include "app_st_imu.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -90,14 +94,51 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
+  MX_I2C1_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
+  OLED_Init();
+  if (BSP_ST_I2C_Init() != HAL_OK)
+  {
+    Error_Handler();
+  }
 
+  if (APP_ST_IMU_Init(400U) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    APP_ST_IMU_Data imu_data;
+
+    OLED_Clear();
+
+    if (APP_ST_IMU_Update() == HAL_OK)
+    {
+      APP_ST_IMU_GetData(&imu_data);
+
+      OLED_ShowString(0, 0, "GX:", OLED_8X16);
+      OLED_ShowFloatNum(24, 0, imu_data.gyro_x_deg_s, 3, 2, OLED_8X16);
+
+      OLED_ShowString(0, 16, "GY:", OLED_8X16);
+      OLED_ShowFloatNum(24, 16, imu_data.gyro_y_deg_s, 3, 2, OLED_8X16);
+
+      OLED_ShowString(0, 32, "GZ:", OLED_8X16);
+      OLED_ShowFloatNum(24, 32, imu_data.gyro_z_deg_s, 3, 2, OLED_8X16);
+
+      OLED_ShowString(0, 48, "deg/s", OLED_6X8);
+    }
+    else
+    {
+      OLED_ShowString(0, 24, "IMU Read Error", OLED_6X8);
+    }
+
+    OLED_Update();
+    HAL_Delay(5U);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
