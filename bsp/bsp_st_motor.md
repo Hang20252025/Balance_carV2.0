@@ -33,7 +33,7 @@ if (BSP_ST_Motor_Init() != HAL_OK)
 
 `BSP_ST_Motor_Init()` 会检查已配置电机的映射，检查定时器通道和方向引脚是否重复，将方向引脚置为低电平、PWM 占空比设为 0，并启动已配置的 PWM 通道。重复调用时会直接返回 `HAL_OK`。
 
-当前 [CubeMX 配置](../Balance_carV2.0.ioc) 将 PB12–PB15 配置为 GPIO 输出；`MX_GPIO_Init()` 会启用 GPIOB 时钟并初始化这些引脚。若更改方向引脚，需同步更新头文件映射和 CubeMX GPIO 配置。
+`MX_GPIO_Init()` 负责启用 GPIOB 时钟；`BSP_ST_Motor_Init()` 会将映射的方向引脚初始化为推挽输出。若更改引脚映射，需确保对应 GPIO 端口时钟已启用。
 
 ## 设置 PWM
 

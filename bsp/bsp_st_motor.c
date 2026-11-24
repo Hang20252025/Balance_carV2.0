@@ -73,6 +73,19 @@ static uint8_t BSP_ST_Motor_IsValidGpioPin(uint16_t pin)
     return (pin != 0U) && ((pin & (uint16_t)(pin - 1U)) == 0U);
 }
 
+static void BSP_ST_Motor_InitDirectionPin(
+    GPIO_TypeDef *port,
+    uint16_t pin)
+{
+    GPIO_InitTypeDef gpio_init = {0};
+
+    gpio_init.Pin = pin;
+    gpio_init.Mode = GPIO_MODE_OUTPUT_PP;
+    gpio_init.Pull = GPIO_NOPULL;
+    gpio_init.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(port, &gpio_init);
+}
+
 static const BSP_ST_MotorConfig *BSP_ST_Motor_GetConfig(BSP_ST_MotorId motor_id)
 {   
     // 防止motor_id非法
@@ -158,6 +171,8 @@ HAL_StatusTypeDef BSP_ST_Motor_Init(void)
             continue;
         }
 
+        BSP_ST_Motor_InitDirectionPin(config->dir1_port, config->dir1_pin);
+        BSP_ST_Motor_InitDirectionPin(config->dir2_port, config->dir2_pin);
         HAL_GPIO_WritePin(config->dir1_port, config->dir1_pin, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(config->dir2_port, config->dir2_pin, GPIO_PIN_RESET);
         __HAL_TIM_SET_COMPARE(config->timer, config->channel, 0U);

@@ -18,9 +18,14 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "drv_oled.h"
+#include "bsp_st_i2c.h"
+#include "app_st_balance_pid.h"
+#include "app_st_imu.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -90,14 +95,52 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
+  MX_I2C1_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
+  if (BSP_ST_I2C_Init() != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  if (APP_ST_IMU_Init(400U) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  OLED_Init();
+  OLED_ShowString(0, 0, "Balance PID", OLED_8X16);
+  OLED_Update();
+
+  if (APP_ST_BALANCE_PID_Init() != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    APP_ST_IMU_Data imu_data;
+
+    if (APP_ST_IMU_Update() == HAL_OK)
+    {
+      APP_ST_IMU_GetData(&imu_data);
+      if (APP_ST_BALANCE_PID_Update(&imu_data) == HAL_ERROR)
+      {
+        Error_Handler();
+      }
+    }
+    else
+    {
+      if (APP_ST_BALANCE_PID_Stop() != HAL_OK)
+      {
+        Error_Handler();
+      }
+    }
+
+    HAL_Delay(5U);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
