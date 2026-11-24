@@ -13,6 +13,8 @@ typedef struct
     float gyro_z_deg_s;
 } APP_ST_IMU_Data;
 
+//用的是2号I2C
+
 HAL_StatusTypeDef APP_ST_IMU_Init(uint32_t calibration_samples);
 HAL_StatusTypeDef APP_ST_IMU_Update(void);
 void APP_ST_IMU_GetData(APP_ST_IMU_Data *data);

@@ -1,7 +1,7 @@
 balance_carv2.0\bsp_st_motor.o: ..\bsp\bsp_st_motor.c
 balance_carv2.0\bsp_st_motor.o: ..\bsp\bsp_st_motor.h
-balance_carv2.0\bsp_st_motor.o: C:\keil5\core\ARM\ARMCC\Bin\..\include\stddef.h
-balance_carv2.0\bsp_st_motor.o: C:\keil5\core\ARM\ARMCC\Bin\..\include\stdint.h
+balance_carv2.0\bsp_st_motor.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+balance_carv2.0\bsp_st_motor.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 balance_carv2.0\bsp_st_motor.o: ../Core/Inc/tim.h
 balance_carv2.0\bsp_st_motor.o: ../Core/Inc/main.h
 balance_carv2.0\bsp_st_motor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h

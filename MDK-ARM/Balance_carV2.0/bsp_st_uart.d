@@ -1,7 +1,7 @@
 balance_carv2.0\bsp_st_uart.o: ..\bsp\bsp_st_uart.c
 balance_carv2.0\bsp_st_uart.o: ..\bsp\bsp_st_uart.h
-balance_carv2.0\bsp_st_uart.o: C:\keil5\core\ARM\ARMCC\Bin\..\include\stddef.h
-balance_carv2.0\bsp_st_uart.o: C:\keil5\core\ARM\ARMCC\Bin\..\include\stdint.h
+balance_carv2.0\bsp_st_uart.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+balance_carv2.0\bsp_st_uart.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 balance_carv2.0\bsp_st_uart.o: ../Core/Inc/main.h
 balance_carv2.0\bsp_st_uart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 balance_carv2.0\bsp_st_uart.o: ../Core/Inc/stm32f1xx_hal_conf.h

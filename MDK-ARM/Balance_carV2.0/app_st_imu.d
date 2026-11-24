@@ -1,6 +1,6 @@
 balance_carv2.0\app_st_imu.o: ..\App\app_st_imu.c
 balance_carv2.0\app_st_imu.o: ..\App\app_st_imu.h
-balance_carv2.0\app_st_imu.o: C:\keil5\core\ARM\ARMCC\Bin\..\include\stdint.h
+balance_carv2.0\app_st_imu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 balance_carv2.0\app_st_imu.o: ../Core/Inc/main.h
 balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 balance_carv2.0\app_st_imu.o: ../Core/Inc/stm32f1xx_hal_conf.h
@@ -15,7 +15,7 @@ balance_carv2.0\app_st_imu.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
 balance_carv2.0\app_st_imu.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h
 balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-balance_carv2.0\app_st_imu.o: C:\keil5\core\ARM\ARMCC\Bin\..\include\stddef.h
+balance_carv2.0\app_st_imu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h
 balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h
 balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h
@@ -30,5 +30,5 @@ balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_
 balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 balance_carv2.0\app_st_imu.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-balance_carv2.0\app_st_imu.o: C:\keil5\core\ARM\ARMCC\Bin\..\include\math.h
+balance_carv2.0\app_st_imu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 balance_carv2.0\app_st_imu.o: ../bsp/bsp_st_i2c.h
