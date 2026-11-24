@@ -742,6 +742,16 @@
               <FileType>1</FileType>
               <FilePath>..\App\app_st_imu.c</FilePath>
             </File>
+            <File>
+              <FileName>app_st_balance_pid.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\App\app_st_balance_pid.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_st_balance_pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\app_st_balance_pid.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

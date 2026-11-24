@@ -75,7 +75,19 @@ uint8_t OLED_DisplayBuf[8][128];
 
 /* HAL I2C transport */
 
-#define OLED_I2C_ADDRESS (0x3C << 1)
+static uint16_t OLED_I2C_Address = (0x3C << 1);
+
+static void OLED_DetectAddress(void)
+{
+	if (HAL_I2C_IsDeviceReady(&hi2c1, (0x3C << 1), 1, 100) == HAL_OK)
+	{
+		OLED_I2C_Address = (0x3C << 1);
+	}
+	else if (HAL_I2C_IsDeviceReady(&hi2c1, (0x3D << 1), 1, 100) == HAL_OK)
+	{
+		OLED_I2C_Address = (0x3D << 1);
+	}
+}
 
 static void OLED_Transmit(uint8_t control, const uint8_t *data, uint8_t count)
 {
@@ -83,11 +95,8 @@ static void OLED_Transmit(uint8_t control, const uint8_t *data, uint8_t count)
 	buffer[0] = control;
 	memcpy(&buffer[1], data, count);
 
-	if (HAL_I2C_Master_Transmit(&hi2c1, OLED_I2C_ADDRESS, buffer,
-		(uint16_t)count + 1, 100) != HAL_OK)
-	{
-		Error_Handler();
-	}
+	HAL_I2C_Master_Transmit(&hi2c1, OLED_I2C_Address, buffer,
+		(uint16_t)count + 1, 100);
 }
 
 static void OLED_WriteCommand(uint8_t command)
@@ -111,6 +120,7 @@ static void OLED_WriteData(uint8_t *data, uint8_t count)
 void OLED_Init(void)
 {
 	HAL_Delay(100);
+	OLED_DetectAddress();
 	
 	/*写入一系列的命令，对OLED进行初始化配置*/
 	OLED_WriteCommand(0xAE);	//设置显示开启/关闭，0xAE关闭，0xAF开启
