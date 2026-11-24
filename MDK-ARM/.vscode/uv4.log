@@ -1,2 +1,4 @@
-Load "Balance_carV2.0\\Balance_carV2_0.axf" 
-Erase Done.Programming Done.Verify OK.Flash Load finished at 15:06:26
+*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Balance_carV2.0'
+"Balance_carV2.0\Balance_carV2_0.axf" - 0 Error(s), 0 Warning(s).
+Build Time Elapsed:  00:00:00

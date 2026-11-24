@@ -22,14 +22,14 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
 #include "drv_oled.h"
 #include "bsp_st_i2c.h"
 #include "app_st_balance_pid.h"
 #include "app_st_imu.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,40 +112,40 @@ int main(void)
   OLED_ShowString(0, 0, "Balance PID", OLED_8X16);
   OLED_Update();
 
-  if (APP_ST_BALANCE_PID_Init() != HAL_OK)
-  {
-    Error_Handler();
-  }
+//  if (APP_ST_BALANCE_PID_Init() != HAL_OK)
+//  {
+//    Error_Handler();
+//  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    APP_ST_IMU_Data imu_data;
+//  while (1)
+//  {
+//    APP_ST_IMU_Data imu_data;
 
-    if (APP_ST_IMU_Update() == HAL_OK)
-    {
-      APP_ST_IMU_GetData(&imu_data);
-      if (APP_ST_BALANCE_PID_Update(&imu_data) == HAL_ERROR)
-      {
-        Error_Handler();
-      }
-    }
-    else
-    {
-      if (APP_ST_BALANCE_PID_Stop() != HAL_OK)
-      {
-        Error_Handler();
-      }
-    }
+//    if (APP_ST_IMU_Update() == HAL_OK)
+//    {
+//      APP_ST_IMU_GetData(&imu_data);
+//      if (APP_ST_BALANCE_PID_Update(&imu_data) == HAL_ERROR)
+//      {
+//        Error_Handler();
+//      }
+//    }
+//    else
+//    {
+//      if (APP_ST_BALANCE_PID_Stop() != HAL_OK)
+//      {
+//        Error_Handler();
+//      }
+//    }
 
-    HAL_Delay(5U);
-    /* USER CODE END WHILE */
+//    HAL_Delay(5U);
+//    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+//    /* USER CODE BEGIN 3 */
+//  }
+//  /* USER CODE END 3 */
 }
 
 /**
