@@ -47,7 +47,7 @@ HAL_StatusTypeDef BSP_ST_I2C_Read(
     uint8_t device_address,
     uint8_t *data,
     uint16_t length);
-
+ 
 HAL_StatusTypeDef BSP_ST_I2C_WriteRegister(// 写入寄存器
     BSP_ST_I2C_Id i2c_id,
     uint8_t device_address,

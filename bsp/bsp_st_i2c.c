@@ -233,7 +233,7 @@ HAL_StatusTypeDef BSP_ST_I2C_ReadRegister(
     uint8_t *data,
     uint16_t length)
 {
-    I2C_HandleTypeDef *handle;
+   I2C_HandleTypeDef *handle;
     uint16_t hal_register_address_size;
 
     if (((data == NULL) && (length != 0U)) ||
@@ -250,7 +250,7 @@ HAL_StatusTypeDef BSP_ST_I2C_ReadRegister(
     {
         return HAL_OK;
     }
-
+ 
     return HAL_I2C_Mem_Read(
         handle,
         (uint16_t)((uint16_t)device_address << 1U),

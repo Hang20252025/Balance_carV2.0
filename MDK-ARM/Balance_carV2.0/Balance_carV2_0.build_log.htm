@@ -22,12 +22,19 @@ Dialog DLL:      TCM.DLL V1.56.1.0
  
 <h2>Project:</h2>
 D:\diansai\hub\Balance_carV2.0 own\Balance_carV2.0\MDK-ARM\Balance_carV2.0.uvprojx
-Project File Date:  11/23/2026
+Project File Date:  11/24/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\keil5\core\ARM\ARMCC\Bin'
 Build target 'Balance_carV2.0'
-"Balance_carV2.0\Balance_carV2_0.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+../bsp/bsp_st_i2c.h(67): warning:  #1-D: last line of file ends without a newline
+  #endif /* BSP_ST_I2C_H */
+../Core/Src/main.c: 1 warning, 0 errors
+linking...
+Program Size: Code=16778 RO-data=2798 RW-data=56 ZI-data=3040  
+FromELF: creating hex file...
+"Balance_carV2.0\Balance_carV2_0.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -51,7 +58,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.6.0
       Include file:  CMSIS/Core/Include/tz_context.h
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

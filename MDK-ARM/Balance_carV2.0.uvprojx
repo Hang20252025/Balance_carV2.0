@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xB</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;../bsp;../App</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;../bsp;../App;../Service</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -751,6 +751,51 @@
               <FileName>app_st_balance_pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\App\app_st_balance_pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_st_drive.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\App\app_st_drive.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_st_drive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\app_st_drive.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_st_speed.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\App\app_st_speed.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_st_speed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\app_st_speed.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_st_steering.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\App\app_st_steering.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_st_steering.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\app_st_steering.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Service</GroupName>
+          <Files>
+            <File>
+              <FileName>pid_controller.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Service\pid_controller.h</FilePath>
+            </File>
+            <File>
+              <FileName>pid_controller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Service\pid_controller.c</FilePath>
             </File>
           </Files>
         </Group>

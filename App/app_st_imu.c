@@ -5,7 +5,7 @@
 
 #define APP_ST_IMU_ADDRESS                  0x68U
 #define APP_ST_IMU_REG_WHO_AM_I             0x75U
-#define APP_ST_IMU_WHO_AM_I_MPU6050         0x68U
+#define APP_ST_IMU_WHO_AM_I_MPU6050         0x74U
 #define APP_ST_IMU_REG_SMPLRT_DIV           0x19U
 #define APP_ST_IMU_REG_CONFIG               0x1AU
 #define APP_ST_IMU_REG_GYRO_CONFIG          0x1BU
@@ -111,7 +111,7 @@ HAL_StatusTypeDef APP_ST_IMU_Init(uint32_t calibration_samples)
             APP_ST_IMU_ADDRESS,
             APP_ST_IMU_REG_WHO_AM_I,
             BSP_ST_I2C_REGISTER_ADDRESS_8BIT,
-            &who_am_i,
+            &who_am_i,//读imu设备寄存器的数据（AI认为是设备地址），并保存在who_am_i里
             1U) != HAL_OK)
     {
         return HAL_ERROR;
@@ -120,7 +120,7 @@ HAL_StatusTypeDef APP_ST_IMU_Init(uint32_t calibration_samples)
     if (who_am_i != APP_ST_IMU_WHO_AM_I_MPU6050)
     {
         return HAL_ERROR;
-    }
+    }//有病！！！！！！！
 
     if ((APP_ST_IMU_WriteRegister(APP_ST_IMU_REG_PWR_MGMT_1, 0x00U) != HAL_OK) ||
         (APP_ST_IMU_WriteRegister(APP_ST_IMU_REG_SMPLRT_DIV, 0x07U) != HAL_OK) ||

@@ -4,19 +4,19 @@
 
 ## 配置与初始化
 
-| 步骤 | 操作 |
-|---|---|
-| 1 | 在 CubeMX 配置 I2C 外设并生成初始化代码 |
-| 2 | 在 `bsp_st_i2c.h` 中将 `BSP_ST_I2C_1_HANDLE` 或 `BSP_ST_I2C_2_HANDLE` 映射到对应的 `&hi2cX`；未使用的总线保留 `NULL` |
-| 3 | 若映射使用 `hi2cX`，在 `bsp_st_i2c.c` 中先包含生成的 `i2c.h`，再包含 `bsp_st_i2c.h` |
-| 4 | 先调用对应的 `MX_I2CX_Init()`，再调用 `BSP_ST_I2C_Init()` |
+| 步骤 | 操作                                                                                                                           |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 1    | 在 CubeMX 配置 I2C 外设并生成初始化代码                                                                                        |
+| 2    | 在 `bsp_st_i2c.h` 中将 `BSP_ST_I2C_1_HANDLE` 或 `BSP_ST_I2C_2_HANDLE` 映射到对应的 `&hi2cX`；未使用的总线保留 `NULL` |
+| 3    | 若映射使用 `hi2cX`，在 `bsp_st_i2c.c` 中先包含生成的 `i2c.h`，再包含 `bsp_st_i2c.h`                                    |
+| 4    | 先调用对应的 `MX_I2CX_Init()`，再调用 `BSP_ST_I2C_Init()`                                                                  |
 
 `BSP_ST_I2C_Init()` 会检查已映射句柄是否已由 HAL 初始化、是否重复映射；没有配置任何总线或句柄未就绪时返回 `HAL_ERROR`。I2C 配置参数、引脚和时钟仍由 CubeMX 管理。
 
 ## 总线编号和地址
 
-| 总线编号 | 映射宏 |
-|---|---|
+| 总线编号            | 映射宏                  |
+| ------------------- | ----------------------- |
 | `BSP_ST_I2C_ID_1` | `BSP_ST_I2C_1_HANDLE` |
 | `BSP_ST_I2C_ID_2` | `BSP_ST_I2C_2_HANDLE` |
 
@@ -24,10 +24,10 @@
 
 ## 常用接口
 
-| 接口 | 用途 |
-|---|---|
-| `BSP_ST_I2C_IsDeviceReady()` | 检查设备是否应答 |
-| `BSP_ST_I2C_Write()` / `BSP_ST_I2C_Read()` | 直接发送或接收数据 |
+| 接口                                                           | 用途                                |
+| -------------------------------------------------------------- | ----------------------------------- |
+| `BSP_ST_I2C_IsDeviceReady()`                                 | 检查设备是否应答                    |
+| `BSP_ST_I2C_Write()` / `BSP_ST_I2C_Read()`                 | 直接发送或接收数据                  |
 | `BSP_ST_I2C_WriteRegister()` / `BSP_ST_I2C_ReadRegister()` | 访问带 8 位或 16 位寄存器地址的设备 |
 
 读写接口为阻塞调用，超时时间由 `BSP_ST_I2C_TIMEOUT_MS` 控制（默认 100 ms）。寄存器地址宽度通过 `BSP_ST_I2C_REGISTER_ADDRESS_8BIT` 或 `BSP_ST_I2C_REGISTER_ADDRESS_16BIT` 指定；使用 8 位宽度时，寄存器地址须不大于 `0xFF`。

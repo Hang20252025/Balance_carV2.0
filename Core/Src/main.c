@@ -22,14 +22,14 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "drv_oled.h"
-#include "bsp_st_i2c.h"
-#include "app_st_balance_pid.h"
-#include "app_st_imu.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "drv_oled.h"
+#include "bsp_st_i2c.h"
+#include "app_st_balance_pid.h"
+#include "app_st_drive.h"
+#include "app_st_imu.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,6 +112,11 @@ int main(void)
   OLED_ShowString(0, 0, "Balance PID", OLED_8X16);
   OLED_Update();
 
+  if (APP_ST_DRIVE_Init() != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   if (APP_ST_BALANCE_PID_Init() != HAL_OK)
   {
     Error_Handler();
@@ -123,18 +128,44 @@ int main(void)
   while (1)
   {
     APP_ST_IMU_Data imu_data;
+    HAL_StatusTypeDef balance_status;
+    float balance_output;
 
     if (APP_ST_IMU_Update() == HAL_OK)
     {
       APP_ST_IMU_GetData(&imu_data);
-      if (APP_ST_BALANCE_PID_Update(&imu_data) == HAL_ERROR)
+
+      balance_status = APP_ST_BALANCE_PID_Update(
+          &imu_data,
+          0.0f,
+          &balance_output);
+      if (balance_status == HAL_OK)
       {
+        if (APP_ST_DRIVE_Apply(balance_output, 0.0f) != HAL_OK)
+        {
+          Error_Handler();
+        }
+      }
+      else if (balance_status == HAL_BUSY)
+      {
+        if (APP_ST_DRIVE_Stop() != HAL_OK)
+        {
+          Error_Handler();
+        }
+      }
+      else
+      {
+        (void)APP_ST_DRIVE_Stop();
         Error_Handler();
       }
     }
     else
     {
       if (APP_ST_BALANCE_PID_Stop() != HAL_OK)
+      {
+        Error_Handler();
+      }
+      if (APP_ST_DRIVE_Stop() != HAL_OK)
       {
         Error_Handler();
       }
@@ -199,9 +230,11 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
+  
   while (1)
   {
+    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+    HAL_Delay(250);
   }
   /* USER CODE END Error_Handler_Debug */
 }

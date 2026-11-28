@@ -1,15 +1,28 @@
-# `app_st_balance_pid` 使用说明
+# 平衡车 PID 控制模块
 
-`app_st_balance_pid` 使用 MPU6050 的俯仰角和 Y 轴角速度计算平衡控制量，并通过现有电机 BSP 输出双路 PWM。接口位于 [`app_st_balance_pid.h`](./app_st_balance_pid.h)，实现位于 [`app_st_balance_pid.c`](./app_st_balance_pid.c)。
+控制代码分为通用 PID 算法、各控制环和电机混控输出：
 
-## 接入方式
+- [`pid_controller.h`](../Service/pid_controller.h)：不依赖硬件的 PID 参数、状态和计算接口。
+- [`app_st_balance_pid.h`](./app_st_balance_pid.h)：平衡环，输入 IMU 数据和目标俯仰角，输出基础驱动量。
+- [`app_st_speed.h`](./app_st_speed.h)：速度环，输入目标速度与测量速度，输出目标俯仰角。
+- [`app_st_steering.h`](./app_st_steering.h)：转向环，输入目标/测量航向角，输出转向差速量。
+- [`app_st_drive.h`](./app_st_drive.h)：将平衡输出和转向输出混控后交给电机 BSP。
 
-先完成 GPIO、定时器和 IMU 初始化，再初始化平衡模块。主循环中每次成功读取 IMU 后调用 PID 更新；传感器读取失败时立即停止电机：
+各模块的完整 API 和调用示例分别见 [`PID 算法说明`](../Service/pid_controller.md)、[`速度环说明`](./app_st_speed.md)、[`转向环说明`](./app_st_steering.md) 和 [`电机混控说明`](./app_st_drive.md)。
+
+每个 PID 控制环单独保存 `PID_History`，并在每次计算时将当前测量值、目标值、采样间隔、配置和历史值显式传给算法。`PID_Config` 中的限幅和增益应按对应控制量的单位设置。`derivative_filter_alpha` 范围为 0 到 1，越小滤波越强，1 表示不滤波。
+
+## 当前主循环
+
+项目已有 IMU 和电机接口，主程序当前只启用平衡环，目标俯仰角为 0，转向量为 0：
 
 ```c
 APP_ST_IMU_Data imu_data;
+float balance_output;
+HAL_StatusTypeDef status;
 
-if (APP_ST_BALANCE_PID_Init() != HAL_OK)
+if (APP_ST_DRIVE_Init() != HAL_OK ||
+    APP_ST_BALANCE_PID_Init() != HAL_OK)
 {
     Error_Handler();
 }
@@ -19,9 +32,30 @@ while (1)
     if (APP_ST_IMU_Update() == HAL_OK)
     {
         APP_ST_IMU_GetData(&imu_data);
-        (void)APP_ST_BALANCE_PID_Update(&imu_data);
+        status = APP_ST_BALANCE_PID_Update(&imu_data, 0.0f, &balance_output);
+
+        if (status == HAL_OK)
+        {
+            if (APP_ST_DRIVE_Apply(balance_output, 0.0f) != HAL_OK)
+            {
+                Error_Handler();
+            }
+        }
+        else if (status == HAL_BUSY)
+        {
+            (void)APP_ST_DRIVE_Stop();
+        }
+        else
+        {
+            if (APP_ST_DRIVE_Stop() != HAL_OK)
+            {
+                Error_Handler();
+            }
+            Error_Handler();
+        }
     }
-    else if (APP_ST_BALANCE_PID_Stop() != HAL_OK)
+    else if (APP_ST_BALANCE_PID_Stop() != HAL_OK ||
+             APP_ST_DRIVE_Stop() != HAL_OK)
     {
         Error_Handler();
     }
@@ -30,14 +64,43 @@ while (1)
 }
 ```
 
-PID 更新基于实际的 `HAL_GetTick()` 间隔；间隔超过 30 ms、俯仰角超过 ±30° 或传感器数据无效时会将 PWM 置零。需保持控制循环连续；同步 OLED 刷新会阻塞循环，不应放在运行中的控制循环里。
+IMU 读取失败时应停止电机。实时控制循环中不要同步刷新 OLED，以免 I2C 阻塞控制。
 
-## 参数和方向调整
+## 速度与转向环接口
 
-在 `app_st_balance_pid.c` 顶部调整目标角、`Kp`、`Ki`、`Kd`、最大 PWM 和最大倾角。当前 `Ki` 默认是 0，便于先用 PD 控制调试；实际参数需根据车体、供电和电机实测整定。
+速度环和转向环只处理输入数据并返回控制量，不读取传感器。速度反馈需要编码器等硬件提供；航向反馈需要陀螺仪积分或其他航向估计。当前工程尚未将这些传感器接入主循环，因此这两个环已提供独立接口，但暂不参与实际驱动。每次更新的 `dt_seconds` 需由调用方按真实采样周期计算。
 
-`APP_ST_BALANCE_CONTROL_REVERSE` 控制整个闭环输出的极性；若任一轮的正向与车体前进方向相反，分别调整 `APP_ST_BALANCE_MOTOR_1_REVERSE` 和 `APP_ST_BALANCE_MOTOR_2_REVERSE`。不同电机驱动器及安装方向可能需要不同配置。
+```c
+const PID_Config speed_config = {
+    1.0f, 0.0f, 0.0f, -5.0f, 5.0f, -2.0f, 2.0f, 1.0f
+};
+const PID_Config steering_config = {
+    1.0f, 0.0f, 0.0f, -250.0f, 250.0f, -20.0f, 20.0f, 1.0f
+};
+float target_pitch_deg;
+float turn_output;
 
-## 安全调试
+if (APP_ST_SPEED_Init(&speed_config) != HAL_OK ||
+    APP_ST_STEERING_Init(&steering_config) != HAL_OK)
+{
+    Error_Handler();
+}
 
-先将车轮架空，确认 IMU 俯仰方向、电机正反转和倾倒时电机响应方向正确，再低速落地测试。若车体一倾斜，电机反而继续加剧倾倒，立即断电并反转控制极性。默认参数只是起始值，不保证适配所有车体；达到最大倾角或控制周期异常时，模块会停 PWM。
+if (APP_ST_SPEED_Update(
+        target_speed, measured_speed, dt_seconds, &target_pitch_deg) != HAL_OK ||
+    APP_ST_STEERING_Update(
+        target_yaw_deg, measured_yaw_deg, dt_seconds, &turn_output) != HAL_OK)
+{
+    Error_Handler();
+}
+```
+
+串级控制时，将速度环的 `target_pitch_deg` 传给平衡环；再把平衡环输出和转向环输出传给 `APP_ST_DRIVE_Apply()`。驱动模块按 `motor1 = balance + turn`、`motor2 = balance - turn` 混合，并将结果限幅到 PWM 范围。示例 PID 参数仅展示接口格式，不是可直接上车的整定值；速度、航向、角度、PWM 的量纲和符号需与实际硬件校准一致。
+
+## 平衡环保护与调参
+
+平衡环按实际 `HAL_GetTick()` 间隔计算，控制间隔超过 30 ms、俯仰角超过 ±30° 或 IMU 数值无效时返回 `HAL_BUSY` 并输出零。超过倾角阈值会锁定停机，需重新初始化平衡模块后才会恢复；IMU 数值或控制周期异常停机后，可在数据恢复时继续运行。其他无效参数或未初始化时返回 `HAL_ERROR`。
+
+平衡环的初始 `Kp/Ki/Kd` 在 `app_st_balance_pid.c` 中配置，当前 `Ki` 为 0；**实际参数需根据车体、供电和电机实测整定。**驱动模块的两个电机方向极性在 `app_st_drive.c` 中分别配置。
+
+首次上车前先架空车轮确认方向。若车体倾斜后电机响应反而加剧倾倒，立即断电并检查 IMU 轴向、控制输出极性和左右电机方向。

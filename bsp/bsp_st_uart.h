@@ -50,9 +50,10 @@ HAL_StatusTypeDef BSP_ST_UART_Send(
 /* Nonblocking read of currently buffered bytes; an empty queue returns size 0. */
 HAL_StatusTypeDef BSP_ST_UART_Receive(
     BSP_ST_UART_Id uart_id,
-    uint8_t *buffer,
+    uint8_t *buffer,//接收数据的缓冲区
     uint16_t buffer_size,
-    uint16_t *received_size);
+    uint16_t *received_size//收到数据的大小
+);
 HAL_StatusTypeDef BSP_ST_UART_GetRxStats(
     BSP_ST_UART_Id uart_id,
     BSP_ST_UART_RxStats *stats);

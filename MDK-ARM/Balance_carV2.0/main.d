@@ -36,4 +36,6 @@ balance_carv2.0\main.o: ../Core/Inc/gpio.h
 balance_carv2.0\main.o: ../bsp/drv_oled.h
 balance_carv2.0\main.o: ../bsp/drv_oled_data.h
 balance_carv2.0\main.o: ../bsp/bsp_st_i2c.h
+balance_carv2.0\main.o: ../App/app_st_balance_pid.h
 balance_carv2.0\main.o: ../App/app_st_imu.h
+balance_carv2.0\main.o: ../App/app_st_drive.h
